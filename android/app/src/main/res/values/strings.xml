@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CleanTube</string>
+    <string name="notification_channel_name">Phát nhạc nền CleanTube</string>
+    <string name="notification_channel_desc">Điều khiển phát video và nhạc nền trên màn hình khóa</string>
+    <string name="action_play">Phát</string>
+    <string name="action_pause">Tạm dừng</string>
+    <string name="action_rewind">Tua lùi 10 giây</string>
+    <string name="action_forward">Tua tới 10 giây</string>
+    <string name="action_stop">Dừng</string>
+</resources>

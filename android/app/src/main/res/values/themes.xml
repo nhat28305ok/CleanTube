@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CleanTube" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/ct_emerald</item>
+        <item name="colorPrimaryDark">@color/ct_bg_obsidian</item>
+        <item name="colorAccent">@color/ct_emerald</item>
+        <item name="android:windowBackground">@color/ct_bg_obsidian</item>
+        <item name="android:statusBarColor">@color/ct_bg_obsidian</item>
+        <item name="android:navigationBarColor">@color/ct_bg_obsidian</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

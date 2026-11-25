@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ct_bg_obsidian">#0F0F0F</color>
+    <color name="ct_surface">#141416</color>
+    <color name="ct_emerald">#22C55E</color>
+    <color name="ct_white">#F5F5F7</color>
+    <color name="ct_black">#000000</color>
+</resources>
