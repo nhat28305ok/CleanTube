@@ -26,9 +26,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.cleantube.app.bridge.CleanTubeNativeBridge
@@ -44,6 +46,7 @@ import com.cleantube.app.web.CleanTubeWebViewClient
  */
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var rootContainer: FrameLayout
     private lateinit var webView: BackgroundWebView
     private lateinit var fullscreenContainer: FrameLayout
     private lateinit var loadingBar: ProgressBar
@@ -88,9 +91,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         configureSystemBars()
 
+        rootContainer = findViewById(R.id.rootContainer)
         webView = findViewById(R.id.webView)
         fullscreenContainer = findViewById(R.id.fullscreenContainer)
         loadingBar = findViewById(R.id.loadingBar)
+        applySystemBarInsets()
 
         cachedUserscript = readUserscriptAsset()
         configureWebView()
@@ -124,6 +129,9 @@ class MainActivity : AppCompatActivity() {
         if (isInPictureInPictureMode) {
             loadingBar.visibility = View.GONE
         }
+        if (::rootContainer.isInitialized) {
+            ViewCompat.requestApplyInsets(rootContainer)
+        }
     }
 
     override fun onPause() {
@@ -150,6 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configureSystemBars() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         val obsidian = Color.parseColor("#0F0F0F")
         @Suppress("DEPRECATION")
         window.statusBarColor = obsidian
@@ -159,6 +168,45 @@ class MainActivity : AppCompatActivity() {
             isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
         }
+    }
+
+    private fun applySystemBarInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { _, windowInsets ->
+            val systemBars = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            val inPip = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode
+
+            webView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                if (inPip) {
+                    leftMargin = 0
+                    topMargin = 0
+                    rightMargin = 0
+                    bottomMargin = 0
+                } else {
+                    leftMargin = systemBars.left
+                    topMargin = systemBars.top
+                    rightMargin = systemBars.right
+                    bottomMargin = maxOf(systemBars.bottom, ime.bottom)
+                }
+            }
+
+            loadingBar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                if (inPip) {
+                    leftMargin = 0
+                    topMargin = 0
+                    rightMargin = 0
+                } else {
+                    leftMargin = systemBars.left
+                    topMargin = systemBars.top
+                    rightMargin = systemBars.right
+                }
+            }
+
+            windowInsets
+        }
+        ViewCompat.requestApplyInsets(rootContainer)
     }
 
     private fun readUserscriptAsset(): String =
