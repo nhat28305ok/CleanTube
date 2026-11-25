@@ -204,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            windowInsets
+            if (inPip) windowInsets else WindowInsetsCompat.CONSUMED
         }
         ViewCompat.requestApplyInsets(rootContainer)
     }
